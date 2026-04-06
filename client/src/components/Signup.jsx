@@ -1,442 +1,147 @@
-import React, { useState } from 'react';
-import { Button } from '../shadcnui/button';
-import { useAppcontext } from '../context/AppContext';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
+  import { Button } from '../shadcnui/button';
+  import { useNavigate } from 'react-router-dom';
+  import * as z from 'zod'
+  import { zodResolver } from '@hookform/resolvers/zod';
+  import { useForm } from 'react-hook-form';
+  import { userSignup } from '../services/auth';
 
-export const Signup = () => {
-  // Destructure fetchUser from useAppcontext - it's no longer needed here for automatic login
-  const { axios } = useAppcontext(); // Only need axios for the signup POST request
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    firstname: '',
-    lastname: '',
-    usertype: '',
-    address: '',
-    email: '',
-    password: '',
-  });
+  export const Signup = () => {
+    const navigate = useNavigate();
+    const formSchema=z.object({
+      firstname:z.string()
+      .nonempty('Firstname is required')
+      .min(3,'Name must be more than 3 Character long.')
+      .max(20,'Name cannot exceed 20 character long.'),
+      
+      lastname:z.string()
+      .nonempty('Lastname is required')
+      .min(3,'Name must be of 3 Character long.')
+      .max(20,'Name cannot exceed 20 character long.'),
+      
+      usertype:z.string()
+      .min(1,'Please select only one type'),
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+      address:z.string()
+      .nonempty('Address is required')
+      .min(4,'Address should be more than 4 character long'),
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const { data } = await axios.post('/api/user/signup', formData);
+      email:z.string()
+      .nonempty('Email is required')
+      .email('Invalid Email Address'),
 
-      if (data.success) {
-        toast.success('Signup successful! Please login.'); 
-        navigate('/login'); // Redirect to login after successful signup
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Signup failed');
-    }
-  };
+      password:z.string()
+      .nonempty('Password is required')
+      .min(8,'Password must be of 8 Character long')
+    })
+    const {register,handleSubmit,reset,formState:{errors,isSubmitting}}=useForm({resolver:zodResolver(formSchema),mode:'onChange'})
 
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
-      >
-        <h2 className="text-2xl font-semibold text-center mb-6">Sign Up</h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label htmlFor="firstname" className="block text-sm mb-1">First Name</label>
-            <input
-              id="firstname"
-              type="text"
-              name="firstname"
-              value={formData.firstname}
-              onChange={handleChange}
-              placeholder='Sulav'
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="lastname" className="block text-sm mb-1">Last Name</label>
-            <input
-              id="lastname"
-              type="text"
-              name="lastname"
-              value={formData.lastname}
-              onChange={handleChange}
-              placeholder='Shrestha'
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-        </div>
+    const onSubmit = async (formData,navigate) => {
+     await userSignup(formData)
+      reset()
+      
+    };
 
-        <div className="mb-4">
-          <label htmlFor="usertype" className="block text-sm mb-1">User Type</label>
-          <select
-            id="usertype"
-            name="usertype"
-            value={formData.usertype}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="" disabled>Select user type</option>
-            <option value="guest">Guest</option>
-            <option value="host">Host</option>
-          </select>
-        </div>
-
-        <div>
-          <label htmlFor="address">Address</label>
-          <input type="text" placeholder='type here' name='address' id='address' value={formData.address}
-            onChange={handleChange} required
-            className="w-full px-4 py-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm mb-1">Email</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder='type here'
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="mb-6">
-          <label htmlFor="password" className="block text-sm mb-1">Password</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder='type here'
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <Button
-          type="submit"
-          className="w-full bg-black text-white py-2 rounded-md"
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
         >
-          Sign Up
-        </Button>
-      </form>
-    </div>
-  );
-};
-  // import React, { useState } from 'react';
-  // import { useNavigate } from 'react-router-dom';
-  // import { toast } from 'react-hot-toast';
-  // import { Button } from '../shadcnui/button';
-  // import { useAppcontext } from '../context/AppContext';
+          <h2 className="text-2xl font-semibold text-center mb-6">Sign Up</h2>
 
-  // const Signup = () => {
-  //   const { setShowLogin, axios, setToken } = useAppcontext();
-  //   const navigate = useNavigate();
-  //   const [formData, setFormData] = useState({
-  //     firstname: '',
-  //     lastname: '',
-  //     usertype: '',
-  //     address: '',
-  //     email: '',
-  //     password: '',
-  //   });
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label htmlFor="firstname" className="block text-sm mb-1">First Name</label>
+              <input
+                id="firstname"
+                type="text"
+                name="firstname"
+                {...register('firstname')}
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.firstname && <p className='text-red-600'> {errors.firstname.message} </p>}
+            </div>
+            <div>
+              <label htmlFor="lastname" className="block text-sm mb-1">Last Name</label>
+              <input
+                id="lastname"
+                type="text"
+                name="lastname"
+                {...register('lastname')}
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.lastname && <p className='text-red-600'>{errors.lastname.message} </p>}
+            </div>
+          </div>
 
-  //   const handleChange = (e) => {
-  //     const { name, value } = e.target;
-  //     setFormData(prev => ({ ...prev, [name]: value }));
-  //   };
+          <div className="mb-4">
+            <label htmlFor="usertype" className="block text-sm mb-1">User Type</label>
+            <select
+              id="usertype"
+              name="usertype"
+              {...register('usertype')}
+              required
+              className="w-full px-4 py-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="" disabled>Select user type</option>
+              <option value="guest">Guest</option>
+              <option value="host">Host</option>
+            </select>
+            {errors.usertype && <p className='text-red-600'>{errors.usertype.message} </p>}
+          </div>
 
-  //   const handleSubmit = async (event) => {
-  //     event.preventDefault();
-  //     try {
-  //       // ✅ Fixed: Send formData in request
-  //       const { data } = await axios.post('/api/user/signup', formData);
-        
-  //       if (data.success) {
-  //         setToken(data.token);
-  //         localStorage.setItem('token', data.token);
-  //         navigate('/');
-  //         toast.success('Signup successful!');
-  //       } else {
-  //         toast.error(data.message);
-  //       }
-  //     } catch (error) {
-  //       toast.error(error.response?.data?.message || 'Signup failed');
-  //     }
-  //   };
+          <div>
+            <label htmlFor="address">Address</label>
+            <input type="text" 
+            placeholder='type here'
+            name='address' 
+            id='address'
+            {...register('address')}
+              required
+              className="w-full px-4 py-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" 
+              />
+              {errors.address && <p className='text-red-600'>{errors.address.message} </p>}
+          </div>
 
-  
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-  //       <form
-  //         onSubmit={handleSubmit}
-  //         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
-  //       >
-  //         <h2 className="text-2xl font-semibold text-center mb-6">Sign Up</h2>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-sm mb-1">Email</label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              {...register('email')}
+              placeholder='type here'
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            {errors.email && <p className='text-red-600'>{errors.email.message} </p>}
+          </div>
 
-  //         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-  //           <div>
-  //             <label htmlFor="firstname" className="block text-sm mb-1">First Name</label>
-  //             <input
-  //               id="firstname"
-  //               type="text"
-  //               name="firstname"
-  //               value={formData.firstname}
-  //               onChange={handleChange}
-  //               placeholder='Sulav'
-  //               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //               required
-  //             />
-  //           </div>
-  //           <div>
-  //             <label htmlFor="lastname" className="block text-sm mb-1">Last Name</label>
-  //             <input
-  //               id="lastname"
-  //               type="text"
-  //               name="lastname"
-  //               value={formData.lastname}
-  //               onChange={handleChange}
-  //               placeholder='Shrestha'
-  //               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //               required
-  //             />
-  //           </div>
-  //         </div>
+          <div className="mb-6">
+            <label htmlFor="password" className="block text-sm mb-1">Password</label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              {...register('password')}
+              placeholder='type here'
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            {errors.password && <p className='text-red-600'>{errors.password.message} </p> }
+          </div>
 
-  //         <div className="mb-4">
-  //           <label htmlFor="usertype" className="block text-sm mb-1">User Type</label>
-  //           <select
-  //             id="usertype"
-  //             name="usertype"
-  //             value={formData.usertype}
-  //             onChange={handleChange}
-  //             required
-  //             className="w-full px-4 py-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //           >
-  //             <option value="" disabled>Select user type</option>
-  //             <option value="guest">Guest</option>
-  //             <option value="host">Host</option>
-  //           </select>
-  //         </div>
-
-
-  //         <div>
-  //           <label htmlFor="address">Address</label>
-  //           <input type="text" name='address' placeholder='type here' id='address' value={formData.address}
-  //           onChange={handleChange} required 
-  //             className="w-full px-4 py-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
-  //         </div>
-
-  //         <div className="mb-4">
-  //           <label htmlFor="email" className="block text-sm mb-1">Email</label>
-  //           <input
-  //             id="email"
-  //             type="email"
-  //             name="email"
-  //             value={formData.email}
-  //             onChange={handleChange}
-  //             placeholder='type here'
-  //             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //             required
-  //           />
-  //         </div>
-
-  //         <div className="mb-6">
-  //           <label htmlFor="password" className="block text-sm mb-1">Password</label>
-  //           <input
-  //             id="password"
-  //             type="password"
-  //             name="password"
-  //             value={formData.password}
-  //             onChange={handleChange}
-  //             placeholder='type here'
-  //             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //             required
-  //           />
-  //         </div>
-
-  //         <Button
-  //           type="submit"
-  //           className="w-full bg-black text-white py-2 rounded-md"
-  //         >
-  //           Sign Up
-  //         </Button>
-  //       </form>
-  //     </div>
-  //   );
-  // };
-// import React, { useState } from 'react';
-// import { Button } from '../shadcnui/button';
-// import { useAppcontext } from '../context/AppContext';
-// import { useNavigate } from 'react-router-dom';
-// import { toast } from 'react-hot-toast';
-
-// export const Signup = () => {
-//   const { axios } = useAppcontext(); 
-//   const navigate = useNavigate();
-
-//   const [formData, setFormData] = useState({
-//     firstname: '',
-//     lastname: '',
-//     usertype: '',
-//     address: '',
-//     email: '',
-//     password: '',
-//   });
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData(prev => ({ ...prev, [name]: value }));
-//   };
-
-//   const handleSubmit = async (event) => {
-//     event.preventDefault();
-//     try {
-//       const { data } = await axios.post('/api/user/signup', formData);
-
-//       if (data.success) {
-//         toast.success('Signup successful!');
-        
-//         // ✅ Reset the form
-//         setFormData({
-//           firstname: '',
-//           lastname: '',
-//           usertype: '',
-//           address: '',
-//           email: '',
-//           password: '',
-//         });
-
-//         // ✅ Redirect to home page
-//         navigate('/');
-//       } else {
-//         toast.error(data.message);
-//       }
-//     } catch (error) {
-//       toast.error(error.response?.data?.message || 'Signup failed');
-//     }
-//   };
-
-//   return (
-//     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-//       <form
-//         onSubmit={handleSubmit}
-//         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
-//       >
-//         <h2 className="text-2xl font-semibold text-center mb-6">Sign Up</h2>
-
-//         {/* Firstname & Lastname */}
-//         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-//           <div>
-//             <label htmlFor="firstname" className="block text-sm mb-1">First Name</label>
-//             <input
-//               id="firstname"
-//               type="text"
-//               name="firstname"
-//               value={formData.firstname}
-//               onChange={handleChange}
-//               placeholder='Sulav'
-//               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//               required
-//             />
-//           </div>
-//           <div>
-//             <label htmlFor="lastname" className="block text-sm mb-1">Last Name</label>
-//             <input
-//               id="lastname"
-//               type="text"
-//               name="lastname"
-//               value={formData.lastname}
-//               onChange={handleChange}
-//               placeholder='Shrestha'
-//               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//               required
-//             />
-//           </div>
-//         </div>
-
-//         {/* User Type */}
-//         <div className="mb-4">
-//           <label htmlFor="usertype" className="block text-sm mb-1">User Type</label>
-//           <select
-//             id="usertype"
-//             name="usertype"
-//             value={formData.usertype}
-//             onChange={handleChange}
-//             required
-//             className="w-full px-4 py-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-//           >
-//             <option value="" disabled>Select user type</option>
-//             <option value="guest">Guest</option>
-//             <option value="host">Host</option>
-//           </select>
-//         </div>
-
-//         {/* Address */}
-//         <div className="mb-4">
-//           <label htmlFor="address">Address</label>
-//           <input
-//             id="address"
-//             type="text"
-//             name="address"
-//             value={formData.address}
-//             onChange={handleChange}
-//             placeholder='Type here'
-//             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//             required
-//           />
-//         </div>
-
-//         {/* Email */}
-//         <div className="mb-4">
-//           <label htmlFor="email" className="block text-sm mb-1">Email</label>
-//           <input
-//             id="email"
-//             type="email"
-//             name="email"
-//             value={formData.email}
-//             onChange={handleChange}
-//             placeholder='Type here'
-//             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//             required
-//           />
-//         </div>
-
-//         {/* Password */}
-//         <div className="mb-6">
-//           <label htmlFor="password" className="block text-sm mb-1">Password</label>
-//           <input
-//             id="password"
-//             type="password"
-//             name="password"
-//             value={formData.password}
-//             onChange={handleChange}
-//             placeholder='Type here'
-//             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//             required
-//           />
-//         </div>
-
-//         <Button
-//           type="submit"
-//           className="w-full bg-black text-white py-2 rounded-md"
-//         >
-//           Sign Up
-//         </Button>
-//       </form>
-//     </div>
-//   );
-// };
+          <Button
+            type='submit'
+            disabled={isSubmitting}
+            className="w-full bg-black text-white py-2 rounded-md"
+          >
+            Sign Up
+          </Button>
+        </form>
+      </div>
+    );
+  };

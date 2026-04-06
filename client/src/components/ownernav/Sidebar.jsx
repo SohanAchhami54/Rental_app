@@ -2,33 +2,21 @@ import { useState } from 'react';
 import { assets} from '../../assets/assets';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAppcontext } from '../../context/AppContext';
-import toast from 'react-hot-toast';
 import { MdDashboard } from "react-icons/md";
 import { RiMotorbikeFill } from "react-icons/ri";   
 import { IoMdAddCircle } from "react-icons/io"; 
 import { MdOutlineManageSearch } from "react-icons/md";
+import { updateHostImage } from '../../services/owner';
 
 const Sidebar = () => {
-  const {user,axios,fetchUser } = useAppcontext();
+  const {user,fetchUser } = useAppcontext();
   const location = useLocation();
   const [image, setImage] = useState('');
   
   const updateImage = async () => {  //for updating the image section.
-     try {
-      const formData=new FormData();
-      formData.append('image',image);
-      const {data}=await axios.post('/api/owner/updateimage',formData);
-      if(data.success){
-        fetchUser();
-        toast.success(data.message);
-        setImage('');
-      }else{
-        toast.error(data.message);
-      }
-
-     } catch (error) {
-        toast.error(error.message);
-     }
+    
+    await updateHostImage(image,setImage)
+          fetchUser();
   };
 
 
@@ -50,25 +38,24 @@ const Sidebar = () => {
 
       {/*  Profile Image */}
       <div className='relative w-16 h-16'>
-        <label htmlFor="image" className='block w-full h-full cursor-pointer'>
-          <img
-            src={image ? URL.createObjectURL(image) : user?.image} 
-            className='h-9 md:h-14 mx-auto rounded-full object-cover'
-            alt="host"
-          />
-          <input
-            type='file'
-            id='image'
-            accept='image/*'
-            hidden
-            onChange={(e) => setImage(e.target.files[0])}
-          />
-          <div className='absolute inset-0 rounded-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition'>
-            <img src={assets.edit_icon} alt="edit_icon" className='w-4 h-4' />
-          </div>
-        </label>
+       <label htmlFor="image" className='block w-full h-full cursor-pointer'>
+     <img
+      src={image ? URL.createObjectURL(image) : user?.image}
+      className='w-full h-full rounded-full object-cover'  
+      alt="host"
+    />
+    <input
+      type='file'
+      id='image'
+      accept='image/*'
+      hidden
+      onChange={(e) => setImage(e.target.files[0])}
+    />
+    <div className='absolute inset-0 rounded-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition'>
+      <img src={assets.edit_icon} alt="edit_icon" className='w-4 h-4' />
+    </div>
+  </label>
       </div>
-
       {/* User Name */}
       <p className='mt-2 text-xs sm:text-md md:text-base'>{user.firstname} </p>
 

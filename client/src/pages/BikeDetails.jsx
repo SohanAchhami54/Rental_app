@@ -1,34 +1,34 @@
 import  { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-// import { assets } from "../assets/assets";
 import { Button } from "../shadcnui/button";
 import { useAppcontext } from "../context/AppContext";
 import { RiMotorbikeLine } from "react-icons/ri";
 import { BsFuelPump } from "react-icons/bs";
 import { MdOutlineLocationOn } from "react-icons/md";
-import toast from "react-hot-toast";
+
+import { bikeBooking } from "../services/bikebooking";
+import { toast } from "react-toastify";
 const BikeDetails = () => {
-  const { id } = useParams(); //it takes the id of particular page //{id: '67ff6b758f1b3684286a2a65'}
+  const { id } = useParams()
   const navigate = useNavigate();
-  const {bike,axios,currency,pickupDate,setPickupDate,returnDate,setReturnDate}=useAppcontext();
+  const {user, bike,currency,pickupDate,setPickupDate,returnDate,setReturnDate}=useAppcontext();
   const [bikes, setBikes] = useState(null);
  
   // console.log(bike);
 
  //to handle the form details
  const handleSubmit=async(e)=>{
-    e.preventDefault();
-    try {
-      const {data}=await axios.post('/api/booking/create',{bikeId:id,pickupDate,returnDate})
-      if(data.success){
-        toast.success(data.message)
-        navigate('/mybooking');
-      }else{
-        toast.error(data.message)
-      }
-    } catch (error) {
-       toast.error(error.message);
+   e.preventDefault();
+    if(user){
+      await bikeBooking({id,pickupDate,returnDate},navigate)
+      setPickupDate('')
+      setReturnDate('')
+    } else{
+    toast.error('User not login')
+    setPickupDate('')
+    setReturnDate('')
     }
+    
  }
 
   useEffect(() => {
@@ -36,8 +36,6 @@ const BikeDetails = () => {
      setBikes(bike.find((bike) => bike._id === id));  //useAppContext bata aayeko bike ho yo.
   }, [bike, id]);
 
-
-  
   return bikes ? (
     <>
       {/* this is the individual bike details */}

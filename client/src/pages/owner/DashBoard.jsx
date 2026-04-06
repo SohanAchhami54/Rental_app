@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
-// import { assets } from '../../assets/assets';
+import { useEffect, useState } from 'react'
 import Title from './Title';
 import { useAppcontext } from '../../context/AppContext';
-import toast from 'react-hot-toast';
+import { fetchDashData } from '../../services/owner';
 
 const DashBoard = () => {
-  const {axios,currency}=useAppcontext();
+  const {currency}=useAppcontext();
   const [data,setData]=useState({
     totalbikes:0,
     totalbooking:0,
@@ -23,16 +22,8 @@ const DashBoard = () => {
   ]
 
   const fetchDashboardData=async()=>{
-        try {
-          const {data}=await axios.get('/api/owner/dashboard')
-          if(data.success){
-            setData(data.dashboardData);
-          }else{
-            toast(data.message);
-          }
-        } catch (error) {
-          toast.error(error.message)
-        }
+    await fetchDashData(setData)
+        
   }
   useEffect(()=>{  //when this component gets load for the first time.
 

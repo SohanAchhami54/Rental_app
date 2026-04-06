@@ -5,54 +5,28 @@ import { FaRegEye } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { useAppcontext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
+import Axios from '../../api/axios';
+import { deleteB, fetchOwnerB, toggleBikeAvailable } from '../../services/owner';
 
 const Managebike = () => {
-const {axios,currency}=useAppcontext();
+const {currency}=useAppcontext();
 const [bike,setBike]=useState([]);
 
 const fetchOwnerBikes=async()=>{
-    try {
-      const {data}=await axios.get('/api/owner/bikes');
-      if(data.success){
-          setBike(data.bikes);
-      }else{
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
+   await fetchOwnerB(setBike)
+
 }
 
 const toggleAvailability=async(bikeId)=>{
-  try {
-    const {data}= await axios.post('/api/owner/toggle-bike',{bikeId});
-    if(data.success){
-      toast.success(data.message);
-      fetchOwnerBikes();
-    }else{
-      toast.error(data.message);
-    }
-  } catch (error) {
-     toast.error(error.message)
-  }
+   await toggleBikeAvailable({bikeId})
+  fetchOwnerBikes();
+
+ 
 }
 
   const deleteBike=async(bikeId)=>{
-
-      try {
-        const confirm =window.confirm('Are you sure want to delete the Bike?');//either we get true or false.
-        if(!confirm) return null;//true nai xaina vaney yo hunxa.
-
-        const {data}=await axios.post('/api/owner/delete-bike',{bikeId});
-        if(data.success){
-          toast.success(data.message);
-          fetchOwnerBikes(); //data base bata feri naya data lai fetch garna ko lagi.
-        }else{
-          toast.error(data.message);//if the user is unauthorized
-        }
-      } catch (error) { //server error
-        toast.error(error.message);
-      }
+    await deleteB({bikeId})
+      fetchOwnerBikes(); //data base bata feri naya data lai fetch garna ko lagi.
   }
 useEffect(()=>{  //whenver the component is loaded.
   fetchOwnerBikes();
@@ -78,7 +52,7 @@ useEffect(()=>{  //whenver the component is loaded.
                  <tbody>
 
       {
-         bike.map((bike,index)=>{
+         bike?.map((bike,index)=>{
            return <tr key={index} className='border-t borderColor'>
              {/* td ma flex so  */}
              

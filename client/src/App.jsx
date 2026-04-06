@@ -1,141 +1,3 @@
-  // import { createBrowserRouter, Route, Router, RouterProvider, Routes } from "react-router-dom";
-  // import Mainlayout from "./components/layout/Mainlayout";
-  // import Home from "./pages/Home";
-  // import BikeDetails from "./pages/BikeDetails";
-  // import MyBooking from "./pages/MyBooking";
-  // import Bikes from "./pages/Bikes";
-  // import OwnerLaout from "./components/ownernav/OwnerLaout";
-  // import Addbike from "./pages/owner/Addbike";
-  // import Managebike from "./pages/owner/Managebike";
-  // import Managebooking from "./pages/owner/Managebooking";
-  // import DashBoard from "./pages/owner/DashBoard";
-  // import {Login} from "./components/Login";
-  // import {Signup} from "./components/Signup";
-  // import  {Toaster} from 'react-hot-toast'; //to display the toast notification.
-
-  // import ProtectedRoute from "./components/ProtectedRoute";
-
-  // // import { useAppcontext } from "./context/AppContext";
-
-  // const App = () => {
-  //     // const {user}=useAppcontext();
-  //   const router = createBrowserRouter([
-  //     {
-        
-  //       path: '/',
-  //       element: <Mainlayout/>,
-  //       //unauthorized
-  //       children: [
-  //         {
-  //           path:'/',
-  //           element:<Home/>
-  //         },
-  //         {
-  //           path: '/bikedetail/:id',
-  //           element:<BikeDetails/>,
-  //         },
-  //         {
-  //           path: '/bike',
-  //           element:<Bikes/>
-  //         },
-        
-  //            {
-  //           path:'/login',
-  //           element:<Login/>
-  //         },
-  //         {
-  //           path:'/signup',
-  //           element:<Signup/>
-  //         },
-  //        {
-  //          element:<ProtectedRoute allowedUsertype="guest"/>,
-  //           children:[
-              
-  //          {
-  //           path:'/mybooking',
-  //            element: (
-  //              <MyBooking />
-  //              )
-
-  //         },
-  //         ]
-  //        },
-      
-        
-  //        {
-  //         element:<ProtectedRoute allowedUsertype="host" />,
-  //         children:[
-  //               {
-  //           path:'/owner',
-  //             element: (
-        
-  //              <OwnerLaout />
-          
-  //         ),
-        
-  //           children:[
-  //             {
-  //                path:'/owner',
-  //                element:<DashBoard/>
-  //             },
-  //             {
-  //               path:'/owner/managebike',
-  //               element:<Managebike/>,
-  //             },
-  //             {
-  //               path:'/owner/addbike',
-  //               element:<Addbike/>
-  //             },
-  //             {
-  //               path:'/owner/managebook',
-  //               element:<Managebooking/>
-  //             },
-  //           ]
-  //         },
-  //         ]
-  //        },
-
-
-        
-      
-  //       ]
-  //     }
-  //   ]);
-
-
-  //   return (
-  //     <>
-  //      {/* {showLogin&&<Login setShowLogin={setShowLogin}/>} */}
-  //       <Toaster/>
-  //           <RouterProvider router={router} />
-  //           {/* <Router>
-
-  //             <Routes>
-                
-  //                  <Route path="/" element={<Mainlayout/>}> 
-  //                   <Route index element={<Home/>}></Route>
-  //                    <Route path="bikedetail/:id" element={<BikeDetails />} />
-  //                    <Route path="bike" element={<Bikes />} />
-  //                   <Route path="login" element={<Login />} />
-  //                   <Route path="signup" element={<Signup />} />
-  //                   <Route path="mybooking" element={<MyBooking />} />
-
-                    
-  //                     <Route path="owner" element={<OwnerLaout />}>
-  //                     <Route index element={<DashBoard />} />
-  //                     <Route path="managebike" element={<Managebike />} />
-  //                     <Route path="addbike" element={<Addbike />} />
-  //                     <Route path="managebook" element={<Managebooking />} />
-  //                    </Route>
-  //                   </Route>
-  //             </Routes>
-  //           </Router> */}
-
-  //     </>
-  //   );
-  // };
-
-  // export default App;
   import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
   import Mainlayout from "./components/layout/Mainlayout";
@@ -152,6 +14,7 @@
   import { Signup } from "./components/Signup";
   import { useAppcontext } from "./context/AppContext";
   import { Toaster } from "react-hot-toast";
+  import { ToastContainer, toast } from 'react-toastify';
   import ProtectedRoute from "./components/ProtectedRoute";
   import NotFound from "./pages/Error";
   import Payment from "./components/payment/Payment";
@@ -165,7 +28,7 @@
   if(loadingUser) return <div>loading app ......</div>;
     return (
       <>
-        <Toaster />
+         <ToastContainer />
         <Router> 
         
           <Routes>
