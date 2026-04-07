@@ -19,11 +19,11 @@ const createBooking =AsyncError(async (req, res,next) => {
     
     //if already the bike booking is created by this user.
     const userbooking=await findBookByUser({user:_id})
-    const matchBooking=userbooking.filter((b)=>b.bike.toString()===bikeId?b.bike:'')
+    const matchBooking=userbooking.find((b)=>b.bike.toString()===bikeId)
     
     if(matchBooking) return next(new ErrorHandler('Bike already booked',400))
     
-    
+
     const {priorityScore,price}=finalScore(bikeData,pickupDate,returnDate)
     // Save booking with priority
     const booking= await makeBooking({bike:bikeId,owner:bikeData.owner, user:_id,pickupDate,returnDate,price,priorityScore})
