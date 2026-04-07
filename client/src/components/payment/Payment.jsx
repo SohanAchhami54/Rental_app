@@ -94,7 +94,7 @@ const Payment = () => {
           <input
           type="hidden"
           name="success_url"
-          value={`http://localhost:5173/success`}
+          value={`${import.meta.env.VITE_FRONTEND_URL}/success`}
           readOnly
         />
        </div>
@@ -104,12 +104,11 @@ const Payment = () => {
           <input
           type="text"
           name="failure_url"
-          value="http://localhost:5173/failure"
+          value={`${import.meta.env.VITE_FRONTEND_URL}/failure`}
           readOnly
         />
         </div>
         
-
         <div>
           <label htmlFor="signed_field_names" className="mr-2">Signed Field Name:</label>
             <input
