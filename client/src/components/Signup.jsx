@@ -36,10 +36,9 @@
     const {register,handleSubmit,reset,formState:{errors,isSubmitting}}=useForm({resolver:zodResolver(formSchema),mode:'onChange'})
 
 
-    const onSubmit = async (formData,navigate) => {
-     await userSignup(formData)
+    const onSubmit = async (formData) => {
+     await userSignup(formData,navigate)
       reset()
-      
     };
 
     return (

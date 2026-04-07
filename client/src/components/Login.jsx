@@ -21,8 +21,8 @@
 
     const {register,handleSubmit,reset,formState:{errors,isSubmitting}}=useForm({resolver:zodResolver(formSchema),mode:'onChange'})
 
-    const onSubmit = async (formData,navigate) => {
-      await userLogin(formData,setToken)
+    const onSubmit = async (formData) => {
+      await userLogin(formData,setToken,navigate)
       reset()
       
     };
