@@ -32,6 +32,7 @@
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
+          noValidate
         >
           <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
 
