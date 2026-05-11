@@ -11,13 +11,15 @@ import { bookingRouter } from './routes/booking.router.js';
 import { guestbookingRouter } from './routes/user.router.js';
 import { errorMiddleware } from './middleware/errorMiddleware.js';
 import { mongoDB } from './config/db.js';
+import { adminRouter } from './routes/admin.router.js';
 
 const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 let corsheaders={
-  origin:'http://localhost:5174',
+  origin:['http://localhost:5174','http://localhost:5175'],
   methods:['GET','POST','PUT','DELETE','PATCH'],
   credentials:true
 }
@@ -34,6 +36,7 @@ app.use('/api/user', authRouter);
 app.use('/api/owner', ownerRouter);
 app.use('/api/booking', bookingRouter);
 app.use('/api/guestbooking', guestbookingRouter);
+app.use('/api/admin',adminRouter)
 const PORT=`${process.env.PORT}`
 mongoDB
     .then(()=>{
