@@ -15,8 +15,9 @@ const generateToken=(user)=>{
     {
         id:user._id.toString()
     },
-    process.env.JWT_SECRET,{
-      expiresIn:'1h'
+    process.env.JWT_SECRET,
+    {
+      expiresIn:'24h'
     }
   )
   return token
@@ -26,5 +27,24 @@ const verifyToken=(token)=>{
      const decode= jwt.verify(token,process.env.JWT_SECRET)
      return decode
 }
+ 
+const generateTokenForAdmin=(user)=>{
+   const token=jwt.sign(
+    {
+      email:user.email
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn:'24h'
+    }
+   )
+   return token 
+}
 
-export {encryptedPassword,comparePassword,generateToken,verifyToken}
+const decodeTokenForAdmin=(token)=>{
+  const decode=jwt.verify(token,process.env.JWT_SECRET) 
+  return decode
+}
+
+
+export {encryptedPassword,comparePassword,generateToken,verifyToken,generateTokenForAdmin,decodeTokenForAdmin}
