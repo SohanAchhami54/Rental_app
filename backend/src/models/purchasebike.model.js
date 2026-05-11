@@ -10,5 +10,8 @@ const purchaseBikesSchema = new mongoose.Schema({
     pickupDate: { type: Date, required: true },
     returnDate: { type: Date, required: true },
 }, { timestamps: true });
-
+ purchaseBikesSchema.index(
+  { returnDate: 1 },
+  { expireAfterSeconds: 0 }
+);
 export default mongoose.model("PurchaseBikes", purchaseBikesSchema);
