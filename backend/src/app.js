@@ -12,6 +12,7 @@ import { guestbookingRouter } from './routes/user.router.js';
 import { errorMiddleware } from './middleware/errorMiddleware.js';
 import { mongoDB } from './config/db.js';
 import { adminRouter } from './routes/admin.router.js';
+import { deleteExpireBooking } from './cron/bookingExpire.cron.js';
 
 const app = express();
 
@@ -41,6 +42,7 @@ const PORT=`${process.env.PORT}`
 mongoDB
     .then(()=>{
       console.log('Mongo is connected')
+      deleteExpireBooking()
        app.listen(PORT, () => {
       console.log(`Server is running at port ${PORT}`);
     });
