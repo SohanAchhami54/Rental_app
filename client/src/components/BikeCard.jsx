@@ -18,7 +18,7 @@ const BikeCard = ({bike,isHost}) => {
      {/* <div onClick={()=>{navigate(`/bikedetail/${bike._id}`);scrollTo(0,0)}} */}
        <div onClick={handleClick}
       className='group rounded-xl overflow-hidden shadow-lg   transition-all duration-500
-      cursor-pointe hover:translate-y-2 cursor-pointer'>
+       hover:translate-y-2 cursor-pointer'>
         {/* this is for image */}
         <div className='relative h-50 w-full overflow-hidden'>
             <img src={bike.image} alt="bike image" className='w-full h-full object-cover transition-all duration-500 ease   hover:scale-105' />
