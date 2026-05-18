@@ -7,6 +7,7 @@ import homebike from './homebike2.jpg'//
 import yamahaBike22 from './yamahabike22.webp';
 import heroBike from './hero.png';
 import ducatiBike from './ducati.webp'//
+import eSewa from './esewa.png'
 //export const cityList = ['New York', 'Los Angeles', 'Houston', 'Chicago']
 
 export const assets = {
@@ -17,6 +18,7 @@ export const assets = {
     yamahaBike22,
     heroBike,
     ducatiBike ,
-    edit_icon
+    edit_icon, 
+    eSewa
 }
 
