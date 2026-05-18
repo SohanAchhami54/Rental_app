@@ -1,7 +1,8 @@
 import { AsyncError } from "../utils/Asyncerror.js";
-import { findGuestForAdmin } from "../services/admin.js";
+import { findGuestForAdmin, findOwnerBikeforAd, findOwnerForAdmin, purchaseBike, userBookingData } from "../services/admin.js";
 import { ErrorHandler } from "../middleware/errorMiddleware.js"
 import { generateTokenForAdmin } from "../utils/auth.js";
+import { bikeAvailability, findBikeData } from "../services/bike.js";
 
 
 
@@ -30,5 +31,42 @@ const adminLogin=AsyncError(async(req,res,next)=>{
     }
 })
 
+const ownerDataforAdmin=AsyncError(async(req,res,next)=>{
+   const ownerData=await findOwnerForAdmin({usertype:'host'}) 
+   if(!ownerData) return next(new ErrorHandler('OwnerData not found',400)) 
+   res.status(200).json({success:true,data:ownerData})
 
-export {userDataforAdmin,adminLogin}   
+})
+
+
+const ownerBikeforAdmin=AsyncError(async(req,res,next)=>{
+    const {ownerid}=req.query 
+    if(!ownerid) return next(new ErrorHandler('Owner id not define',400))
+    const bike=await findOwnerBikeforAd(ownerid)
+    if(!bike) return next(new ErrorHandler('Owner Bike not found',400))
+ 
+    res.status(200).json({success:true,data:bike})
+})
+
+const toggleBikeForAdmin=AsyncError(async(req,res,next)=>{
+    const {bikeid}=req.body  
+    if(!bikeid) return next(new ErrorHandler('Owner id not define',400)) 
+    const bike=await findBikeData(bikeid) 
+    if(!bike) return next(new ErrorHandler('Bike not found',400))
+    await bikeAvailability(bike)
+    res.status(200).json({success:true,message:'Availability Toggle'})
+})
+
+const purchaseBikeForAdmin=AsyncError(async(req,res,next)=>{
+    const purchasebike=await purchaseBike()
+    if(!purchasebike) return next(new ErrorHandler('Purchase bike not found',400)) 
+    res.status(200).json({success:true,data:purchasebike})
+})
+
+const userBookingForAdmin=AsyncError(async(req,res,next)=>{
+    const bookingdata=await userBookingData()
+     if(!bookingdata) return next(new ErrorHandler('Booking data not found',400)) 
+     res.status(200).json({success:true,data:bookingdata}) 
+})
+
+export {userDataforAdmin,adminLogin,ownerDataforAdmin,ownerBikeforAdmin,toggleBikeForAdmin,purchaseBikeForAdmin,userBookingForAdmin}   
