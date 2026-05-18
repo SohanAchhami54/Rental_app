@@ -6,27 +6,24 @@ import CryptoJS from 'crypto-js';
 import { v4 as uuidv4 } from 'uuid';
 import { sendMail } from '../utils/mailer.js';
 import { AsyncError } from '../utils/Asyncerror.js';
-import { deleteBooking, findMybooking } from '../services/booking.js';
+import { bookingPayment, deleteBooking, findMybooking } from '../services/booking.js';
+import { ErrorHandler } from '../middleware/errorMiddleware.js';
 
 // Payment success handler
 const paymentsuccess = AsyncError(async (req, res) => {
-  try {
     const { bookingId, transactionCode, total_amount, status } = req.body;
     console.log("bookingId:", bookingId, "status:", status);
+    
+    const booking= await bookingPayment(bookingId)
 
-    const booking = await Booking.findById(bookingId)
-      .populate('user')
-      .populate('bike')
-      .populate('owner');
-
-    if (!booking) return res.json({ success: false, message: "Booking not found" });
-
+    if (!booking) return next(new ErrorHandler('Booking not found',400))
+  
     const normalized = status?.toLowerCase();
 
     if (normalized === "completed" || normalized === "complete" || normalized === "success") {
       booking.payment.pricestatus = "paid";
-      booking.status = "confirmed";
-      booking.payment.transactionCode = transactionCode;
+      booking.status = "confirmed";   
+      //booking.payment.transactionCode = transactionCode;
 
       // Create purchased bike record in database
       await purchasedBikes.create({
@@ -48,7 +45,7 @@ const paymentsuccess = AsyncError(async (req, res) => {
         transactionCode,
         method: "eSewa",
       });
-
+     
       const emailContent = `
         <h2>Payment Successful</h2>
         <p>Hello ${booking.user.firstname} ${booking.user.lastname},</p>
@@ -81,12 +78,8 @@ const paymentsuccess = AsyncError(async (req, res) => {
     }
 
     await booking.save();
-    res.json({ success: true, message: "Payment recorded", booking });
-
-  } catch (error) {
-    res.json({ success: false, message: error.message });
-  }
-});
+    res.status(200).json({ success: true, message: "Payment recorded", booking });
+  });
 
 // Get all bookings for the logged-in user
 const getUserBookings =AsyncError(async (req, res) => {
