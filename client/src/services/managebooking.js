@@ -23,9 +23,7 @@ const changeStatus=async(setBookings,{bookingId,status})=>{
             setBookings((prev) =>
               prev.map((b) => (b._id === bookingId ? { ...b, status } : b)),
             );
-          } else {
-            toast.error(data.message);
-          }
+          } 
         } catch (error) {
           toast.error(error.response?.data?.message);
         }
