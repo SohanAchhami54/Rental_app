@@ -51,6 +51,9 @@ const bookingSchema = new Schema({
 }, { timestamps: true });
 
 // optional TTL index (delete doc when returnDate passes)
-bookingSchema.index({ returnDate: 1 }, { expireAfterSeconds: 0 });
+ bookingSchema.index(
+  { returnDate: 1 },
+  { expireAfterSeconds: 0 }
+);
 
 export default mongoose.model('Booking', bookingSchema);
