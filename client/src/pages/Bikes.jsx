@@ -13,7 +13,7 @@ const Bikes = () => {
   const [match, setMatch] = useState('');
 
 
-  const applyFilter = async () => {
+  const applyFilter =  () => {
      setBike(bike)
   }
 
