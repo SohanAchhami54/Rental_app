@@ -10,11 +10,27 @@ const Payment = () => {
   //ensure that the page was reached via navigate /navigate and also the state.
   const amountFromState=location.state?.total_amount??null;
 
-  useEffect(()=>{
-    if(amountFromState==null){
-      navigate('/mybooking',{replace:true});
-    }
-  },[amountFromState,navigate])
+  
+    
+  useEffect(() => {
+  if (amountFromState == null) {
+    navigate('/mybooking', { replace: true });
+    return;
+  }
+  // This clears the forward stack
+  window.history.replaceState(null, '', window.location.href);
+}, []); // ← empty array, runs immediately on mount
+
+  //   useEffect(() => {
+  //   const handlePopState = () => {
+  //     navigate('/mybooking', { replace: true });
+  //   };
+  //   window.addEventListener('popstate', handlePopState);
+  //   window.history.pushState(null, '', window.location.href);
+  //   return () => {
+  //      window.removeEventListener('popstate', handlePopState);
+  //   }
+  // }, [navigate]);
 
   // Individual amounts
   const amount =amountFromState;
@@ -27,7 +43,7 @@ const Payment = () => {
 
   // Unique transaction ID
   const uid = uuidv4();
-
+ 
   // Esewa secret key from .env (must start with VITE_)
   const secret_key = import.meta.env.VITE_SECRET_KEY;
 
