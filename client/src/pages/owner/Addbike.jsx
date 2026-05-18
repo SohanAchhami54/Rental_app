@@ -16,7 +16,7 @@ const bikeSchema = z.object({
     .min(1990, 'Year must be 1990 or later')
     .max(new Date().getFullYear(), 'Year cannot be in the future'),
   pricePerDay: z.coerce.number()
-    .min(1, 'Price must be greater than 0'),
+    .min(100, 'Price must be greater than 100'),
   category: z.string().nonempty('Category is required'),
   transmission: z.string().nonempty('Transmission is required'),
   fuel_type: z.string().nonempty('Fuel type is required'),
@@ -49,6 +49,7 @@ const Addbike = () => {
     reset()
 
   }
+  console.log('the image data is:',image)
 
   return (
     <div className='px-4 py-5 md:px-10'>
