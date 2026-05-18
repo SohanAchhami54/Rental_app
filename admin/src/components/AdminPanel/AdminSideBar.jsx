@@ -11,8 +11,11 @@ const AdminSideBar = () => {
 }
   return (
     <>
-      <div className='relative  flex flex-col gap-8  items-start pt-8 px-2 sm:px-5 md:px-10 lg:px-13 max-w-13 md:max-w-55 w-full bg-gray-50 font-medium
-      min-h-screen  text-xs sm:text-sm md:text-base lg:text-md'>
+      <div  className='fixed left-0 z-40 flex flex-col gap-6
+      items-start pt-8 px-2 sm:px-5 md:px-6
+      max-w-10  md:max-w-40 w-full bg-gray-50
+      font-medium min-h-screen 
+      text-xs sm:text-sm md:text-sm'>
         <NavLink  to={'/'} className={isActive}>
             <FaUser />
             <span className='hidden md:flex'>Guest</span>
