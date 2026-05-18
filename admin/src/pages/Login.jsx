@@ -16,7 +16,7 @@
         });
 
         const Login = () => {
-            const {adToken,setAdToken}=useAdmin()
+            const {adToken,setAdToken,setLoading}=useAdmin()
     
         const { register, handleSubmit, reset, watch, formState:{ errors, isSubmitting } } =
             useForm({
