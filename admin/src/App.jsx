@@ -14,13 +14,12 @@ import {Navigate} from 'react-router-dom'
 import NotFound from './pages/NotFound'
 
 const App = () => {
-  const {adToken}=useAdmin()
+  const {adToken,loading}=useAdmin()
+  if(loading) return <div>Loading.........</div>
   return (
     <>
     <ToastContainer/>
         <Routes>
-               
-               
                  <Route path='/login' element={adToken? <Navigate to='/' replace />: <Login/> } />
                  <Route path='/' element={<AdminLayout/>}>
                  <Route  element={<ProtectedRoute/>}>
