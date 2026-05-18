@@ -13,9 +13,9 @@ const AdminHeader = () => {
 
     }
   return (
-    <div className='flex justify-around items-center  px-6 md:px-10 py-5 bg-amber-200'>
-      <h1 className='text-2xl sm:text-3xl md:text-4xl font-semibold'>This is Admin Panel</h1>
-      <button onClick={logout} className='text-xl font-semibold hover:cursor-pointer'>Logout </button>
+    <div className='sticky top-0 z-50 flex justify-around items-center  px-6 md:px-10 py-3 bg-amber-200'>
+      <h1 className='text-xs sm:text-base md:text-2xl lg:text-3xl  font-semibold'>This is Admin Panel</h1>
+      <button onClick={logout} className='text-md md:text-xl font-semibold hover:cursor-pointer'>Logout </button>
     </div>
   )
 }
