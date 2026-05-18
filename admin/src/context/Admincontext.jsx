@@ -7,14 +7,32 @@ const AdminContext=createContext()
 
 export const AdminProvider=({children})=>{
       const [adToken,setAdToken]=useState('') 
+      const [loading,setLoading]=useState(true)
        console.log('the value of the token is:',adToken)
 
      useEffect(()=>{
         const token=localStorage.getItem('adToken') 
-        setAdToken(token)
+        if(token){
+            setAdToken(token) 
+        }else{
+            setAdToken('')
+        }
+        setLoading(false)
      },[])
         
-  const value={adToken,setAdToken}
+         useEffect(() => {
+        const interval = setInterval(() => {
+            const token = localStorage.getItem('adToken')
+            if (!token) {
+                setAdToken('')
+            }
+        }, 2000)
+
+        return () => clearInterval(interval)
+    }, [])
+
+
+  const value={adToken,setAdToken,loading,setLoading}
     return (
         <AdminContext.Provider value={value}>
            {children}
