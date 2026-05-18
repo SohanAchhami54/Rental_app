@@ -20,8 +20,6 @@ const fetchOwnerBikes=async()=>{
 const toggleAvailability=async(bikeId)=>{
    await toggleBikeAvailable({bikeId})
   fetchOwnerBikes();
-
- 
 }
 
   const deleteBike=async(bikeId)=>{
@@ -53,17 +51,17 @@ useEffect(()=>{  //whenver the component is loaded.
 
       {
          bike?.map((bike,index)=>{
-           return <tr key={index} className='border-t borderColor'>
+           return <tr key={index} className='border-t'>
              {/* td ma flex so  */}
              
                   {/* first data  */}
                    <td className='p-3 flex items-center gap-3'>
                    {/* first element  */}
                     <img src={bike.image}  className='h-12 w-12 aspect-square object-cover rounded-md' alt="" />
-                    {/* mobile ma chai yo hidden hunxa  */}
-                   <div className='max-md:hidden flex flex-col gap-1'>
-                    <p className='font-medium'>{bike.model}{bike.brand} </p>
-                    <p className='font-medium'>{bike.transmission} </p>
+                    {/* mobile ma chai yo hidden hunxa and hidden is block elements.  */}
+                   <div className='max-md:hidden flex flex-col gap-1'> 
+                    <p className='text-xs md:text-sm  font-medium'>{bike.model}{bike.brand} </p>
+                    <p className='text-xs md:text-sm font-medium'>{bike.transmission} </p>
                    </div>
                    </td>
 
