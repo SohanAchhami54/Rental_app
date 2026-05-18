@@ -15,9 +15,10 @@ const calculatePriority = (pickupDate, returnDate, bookingDate) => {
   // Scoring logic
   const urgencyScore = Math.max(0, 10 - urgencyInDays);
   const durationScore = Math.min(durationInDays, 10);
-
+    //converts booking time to a small decimal
+   const bookingTimeScore = 1 - (booking.getTime() % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60 * 24)
   // Weighted final score
-  return (2 * urgencyScore) + durationScore;
+  return (2 * urgencyScore) + durationScore +bookingTimeScore;
 };
 
 const finalScore=(bikeData,pickupDate,returnDate)=>{
@@ -29,7 +30,7 @@ const finalScore=(bikeData,pickupDate,returnDate)=>{
 
     // Calculate priority score (using today's date as bookingDate)
     const bookingDate = new Date();
-    const priorityScore = Math.floor(calculatePriority(pickupDate, returnDate, bookingDate));
+    const priorityScore =parseFloat(calculatePriority(pickupDate, returnDate, bookingDate)).toFixed(5);
     return { priorityScore,price}
 }
 
@@ -103,4 +104,13 @@ const findMybooking=async({user})=>{
   }
 }
 
-export {finalScore,makeBooking,bookingUpdate,findBookingById,bookingS,findBookingOwner,findBookByUser,deleteBooking,findMybooking}
+const bookingPayment=async(bookingId)=>{
+  try{
+   const booking=await Booking.findById(bookingId).populate('bike user owner') 
+   return booking
+  }catch(error){
+    console.log('Error occured:',error)
+  }
+}
+
+export {finalScore,makeBooking,bookingUpdate,findBookingById,bookingS,findBookingOwner,findBookByUser,deleteBooking,findMybooking,bookingPayment}
