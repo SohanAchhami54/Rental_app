@@ -23,7 +23,6 @@ const postAddBike =AsyncError(async (req, res) => {
         folder:'/bikes'
       })
 
-
       const optimizedImageUrl=optimizedImage(response)
   
       await createBike(bikeData,_id,optimizedImageUrl) 
@@ -140,7 +139,7 @@ export { postAddBike, getOwnerBikes, toggleBikeAvailability, deletebike, getDash
 //     }`
 //   },
 //   file: {
-//     fieldname: 'image',
+//     fieldname: 'image',  
 //     originalname: 'pulsar-ns200.jpg',
 //     encoding: '7bit',
 //     mimetype: 'image/jpeg',
