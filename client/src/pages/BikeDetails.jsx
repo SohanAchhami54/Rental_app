@@ -112,7 +112,7 @@ const BikeDetails = () => {
 
 
           {/* this is for the right bike image */}
-         <form action="" onSubmit={handleSubmit}
+         <form onSubmit={handleSubmit}
           className="h-max sticky top-18 p-6 shadow-xl rounded-lg">
               <p className="text-xl font-bold flex items-center justify-between ">
                 {currency}{bikes.pricePerDay} <span className="font-normal text-gray-600">per day </span></p>
@@ -130,8 +130,22 @@ const BikeDetails = () => {
                required />
                {/* return date */}
                <label htmlFor="return-date">Return Date</label>
-               <input value={returnDate} onChange={(e)=>setReturnDate(e.target.value)}
+               <input value={returnDate}
+                onChange={(e)=>{
+                const selected=e.target.value 
+                if(selected>pickupDate){
+                  setReturnDate(selected)
+                }else{ 
+                  setReturnDate('')
+                }
+              }}
                 type="date" id='return-date' className="border  px-3 py-2 rounded-lg"
+                min={
+                  pickupDate 
+                  ? ( new Date(new Date(pickupDate).getTime() +24*60*60*1000)
+                ).toISOString().split('T')[0]
+                :'' 
+                }
                required />
                <Button className="text-lg text-white bg-black">Book now</Button>
                <p className="text-center py-1 text-sm">No Credit card require to reserve</p>
